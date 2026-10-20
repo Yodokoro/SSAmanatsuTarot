@@ -1,0 +1,218 @@
+:root {
+  --bg: #fbf3e4;
+  --paper: #fffaf0;
+  --ink: #3b2a1e;
+  --muted: #7a6550;
+  --line: #e3d2b4;
+  --amanatsu: #f29b2b;
+  --amanatsu-dark: #c9711a;
+  --navy: #22305a;
+  --gold: #c9a548;
+  --red: #b2463a;
+}
+
+* { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 10%, #ffe2b3 0, transparent 40%),
+    radial-gradient(circle at 85% 90%, #f7d9a8 0, transparent 40%),
+    var(--bg);
+  color: var(--ink);
+  font-family: "Hiragino Maru Gothic ProN", "Zen Maru Gothic", "Yu Gothic", "Meiryo", sans-serif;
+  line-height: 1.7;
+}
+
+main { max-width: 860px; margin: 0 auto; padding: 0 16px 40px; }
+
+/* ヘッダー */
+.site-header { text-align: center; padding: 40px 16px 24px; }
+.site-header .sub {
+  margin: 0;
+  color: var(--amanatsu-dark);
+  letter-spacing: 0.2em;
+  font-size: 0.85rem;
+}
+.site-header h1 {
+  margin: 4px 0 8px;
+  font-size: clamp(1.6rem, 6vw, 2.4rem);
+  color: var(--navy);
+  line-height: 1.3;
+}
+.site-header .lead { margin: 0; color: var(--muted); }
+.sp { display: none; }
+@media (max-width: 480px) { .sp { display: inline; } }
+
+/* はじめ */
+.panel {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 6px 20px rgba(120, 80, 30, 0.08);
+  max-width: 520px;
+  margin: 0 auto;
+}
+.panel .lead { margin: 0 0 20px; text-align: center; }
+.question { display: grid; gap: 6px; margin-bottom: 20px; font-weight: bold; }
+.question input {
+  font: inherit;
+  font-weight: normal;
+  padding: 10px 12px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+}
+.question input:focus { outline: none; border-color: var(--amanatsu); }
+
+button { font: inherit; cursor: pointer; }
+.primary, .secondary {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  border-radius: 999px;
+  font-weight: bold;
+}
+.primary {
+  border: 0;
+  color: #fff;
+  background: linear-gradient(135deg, var(--amanatsu), var(--amanatsu-dark));
+  box-shadow: 0 4px 12px rgba(201, 113, 26, 0.35);
+}
+.primary:hover { filter: brightness(1.05); }
+.secondary { border: 2px solid var(--amanatsu); color: var(--amanatsu-dark); background: #fff; }
+.primary:focus-visible, .secondary:focus-visible, .card:focus-visible {
+  outline: 3px solid var(--navy);
+  outline-offset: 3px;
+}
+
+/* カードを選ぶ */
+.shown-question { text-align: center; font-weight: bold; color: var(--navy); margin: 0; }
+.hint { text-align: center; color: var(--muted); margin: 4px 0 16px; }
+
+.deck {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+  gap: 10px;
+  max-width: 780px;
+  margin: 0 auto;
+}
+@media (min-width: 640px) {
+  .deck { grid-template-columns: repeat(11, 1fr); }
+}
+.deck-card {
+  aspect-ratio: 941 / 1672;
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 6px;
+  animation: deal 0.4s ease-out both;
+  transition: transform 0.25s, opacity 0.4s;
+}
+.deck-card:hover, .deck-card:focus-visible { transform: translateY(-8px); }
+.deck-card:focus-visible { outline: 3px solid var(--amanatsu); outline-offset: 2px; }
+.deck.chosen .deck-card { opacity: 0.15; pointer-events: none; }
+.deck.chosen .deck-card.selected {
+  opacity: 1;
+  transform: translateY(-12px) scale(1.15);
+  box-shadow: 0 0 0 3px var(--amanatsu), 0 0 24px var(--amanatsu);
+}
+.card-back, .back {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  border: 3px solid var(--paper);
+  background:
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.08) 0 4px, transparent 4px 10px),
+    radial-gradient(circle at center, var(--amanatsu) 0 18%, transparent 19%),
+    var(--navy);
+  box-shadow: 0 3px 8px rgba(40, 30, 20, 0.25);
+}
+.card-back::after, .back::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+}
+.back-mark { color: #fff; font-size: 1rem; }
+.back .back-mark { font-size: 2.4rem; }
+
+@keyframes deal {
+  from { opacity: 0; transform: translateY(-20px) rotate(-4deg); }
+  to { opacity: 1; transform: none; }
+}
+
+/* 結果 */
+.chosen-wrap { display: flex; justify-content: center; margin: 8px 0 20px; }
+.card {
+  width: min(70vw, 280px);
+  aspect-ratio: 941 / 1672;
+  perspective: 1200px;
+}
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.3, 0.7, 0.3, 1);
+  transform-style: preserve-3d;
+}
+.card.flipped .card-inner { transform: rotateY(180deg); }
+
+.face {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 6px 16px rgba(40, 30, 20, 0.25);
+}
+.front { transform: rotateY(180deg); background: var(--paper); }
+.front img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.front img.reversed { transform: rotate(180deg); }
+
+
+.result {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--amanatsu);
+  border-radius: 12px;
+  padding: 16px 18px;
+  max-width: 560px;
+  margin: 0 auto 24px;
+  animation: deal 0.4s ease-out both;
+}
+.result.is-reversed { border-left-color: var(--navy); }
+.result h2 { margin: 2px 0 0; font-size: 1.2rem; color: var(--navy); }
+.result .roman { color: var(--gold); }
+.result .orientation {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  vertical-align: middle;
+  color: #fff;
+  background: var(--amanatsu);
+}
+.result.is-reversed .orientation { background: var(--navy); }
+.result .en { margin: 0 0 6px; font-size: 0.75rem; letter-spacing: 0.1em; color: var(--muted); }
+.result .meaning { margin: 0; }
+
+.site-footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding: 20px 16px 32px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .deck-card, .result { animation: none; }
+  .card-inner { transition: none; }
+}
