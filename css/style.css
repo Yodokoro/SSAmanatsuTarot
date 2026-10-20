@@ -8,7 +8,6 @@
   --amanatsu-dark: #c9711a;
   --navy: #22305a;
   --gold: #c9a548;
-  --red: #b2463a;
 }
 
 * { box-sizing: border-box; }
@@ -29,8 +28,10 @@ body {
 
 main { max-width: 860px; margin: 0 auto; padding: 0 16px 40px; }
 
+button { font: inherit; cursor: pointer; }
+
 /* ヘッダー */
-.site-header { text-align: center; padding: 40px 16px 24px; }
+.site-header { text-align: center; padding: 32px 16px 12px; }
 .site-header .sub {
   margin: 0;
   color: var(--amanatsu-dark);
@@ -38,181 +39,249 @@ main { max-width: 860px; margin: 0 auto; padding: 0 16px 40px; }
   font-size: 0.85rem;
 }
 .site-header h1 {
-  margin: 4px 0 8px;
+  margin: 4px 0 0;
   font-size: clamp(1.6rem, 6vw, 2.4rem);
   color: var(--navy);
   line-height: 1.3;
 }
-.site-header .lead { margin: 0; color: var(--muted); }
 .sp { display: none; }
 @media (max-width: 480px) { .sp { display: inline; } }
 
-/* はじめ */
-.panel {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 6px 20px rgba(120, 80, 30, 0.08);
-  max-width: 520px;
-  margin: 0 auto;
-}
-.panel .lead { margin: 0 0 20px; text-align: center; }
-.question { display: grid; gap: 6px; margin-bottom: 20px; font-weight: bold; }
-.question input {
-  font: inherit;
-  font-weight: normal;
-  padding: 10px 12px;
-  border: 2px solid var(--line);
-  border-radius: 10px;
-  background: #fff;
-}
-.question input:focus { outline: none; border-color: var(--amanatsu); }
+.lead { text-align: center; color: var(--muted); margin: 8px 0 4px; font-size: 0.95rem; }
+.progress { text-align: center; font-weight: bold; color: var(--amanatsu-dark); margin: 0 0 8px; }
 
-button { font: inherit; cursor: pointer; }
-.primary, .secondary {
-  display: block;
-  width: 100%;
-  max-width: 320px;
+/* ===== ホロスコープ配置 =====
+   --w: カードの幅 / --sx, --sy: ひし形の1マス分のずらし幅 */
+.board {
+  --w: min(96px, calc((100vw - 32px) / 7.6));
+  --h: calc(var(--w) * 1672 / 941);
+  --sx: calc(var(--w) * 0.87);
+  --sy: calc(var(--w) * 1.15);
+  --pad-x: calc(var(--w) * 0.7);
+  --pad-y: calc(var(--w) * 0.5 + 1.6em);
+  --label-size: clamp(12px, calc(var(--w) * 0.24), 17px);
+  position: relative;
+  width: calc(var(--sx) * 6 + var(--w) + var(--pad-x) * 2);
+  height: calc(var(--sy) * 6 + var(--h) + var(--pad-y) * 2);
   margin: 0 auto;
-  padding: 14px 20px;
-  border-radius: 999px;
-  font-weight: bold;
-}
-.primary {
-  border: 0;
-  color: #fff;
-  background: linear-gradient(135deg, var(--amanatsu), var(--amanatsu-dark));
-  box-shadow: 0 4px 12px rgba(201, 113, 26, 0.35);
-}
-.primary:hover { filter: brightness(1.05); }
-.secondary { border: 2px solid var(--amanatsu); color: var(--amanatsu-dark); background: #fff; }
-.primary:focus-visible, .secondary:focus-visible, .card:focus-visible {
-  outline: 3px solid var(--navy);
-  outline-offset: 3px;
+  font-size: var(--label-size);
 }
 
-/* カードを選ぶ */
-.shown-question { text-align: center; font-weight: bold; color: var(--navy); margin: 0; }
-.hint { text-align: center; color: var(--muted); margin: 4px 0 16px; }
-
-.deck {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
-  gap: 10px;
-  max-width: 780px;
-  margin: 0 auto;
+/* 各カードの中心 = 盤の中心 + (x, y) マス */
+.mini, .label {
+  position: absolute;
+  --cx: calc(50% + var(--x) * var(--sx));
+  --cy: calc(50% + var(--y) * var(--sy));
 }
-@media (min-width: 640px) {
-  .deck { grid-template-columns: repeat(11, 1fr); }
-}
-.deck-card {
-  aspect-ratio: 941 / 1672;
+.mini {
+  left: calc(var(--cx) - var(--w) / 2);
+  top: calc(var(--cy) - var(--h) / 2);
+  width: var(--w);
+  height: var(--h);
   padding: 0;
   border: 0;
   background: none;
+  perspective: 600px;
   border-radius: 6px;
-  animation: deal 0.4s ease-out both;
-  transition: transform 0.25s, opacity 0.4s;
+  transition: transform 0.2s;
 }
-.deck-card:hover, .deck-card:focus-visible { transform: translateY(-8px); }
-.deck-card:focus-visible { outline: 3px solid var(--amanatsu); outline-offset: 2px; }
-.deck.chosen .deck-card { opacity: 0.15; pointer-events: none; }
-.deck.chosen .deck-card.selected {
-  opacity: 1;
-  transform: translateY(-12px) scale(1.15);
-  box-shadow: 0 0 0 3px var(--amanatsu), 0 0 24px var(--amanatsu);
-}
-.card-back, .back {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  border: 3px solid var(--paper);
-  background:
-    repeating-linear-gradient(45deg, rgba(255,255,255,0.08) 0 4px, transparent 4px 10px),
-    radial-gradient(circle at center, var(--amanatsu) 0 18%, transparent 19%),
-    var(--navy);
-  box-shadow: 0 3px 8px rgba(40, 30, 20, 0.25);
-}
-.card-back::after, .back::after {
-  content: "";
-  position: absolute;
-  inset: 4px;
-  border: 1px solid var(--gold);
-  border-radius: 3px;
-}
-.back-mark { color: #fff; font-size: 1rem; }
-.back .back-mark { font-size: 2.4rem; }
+.mini:not(.flipped):hover, .mini:focus-visible { transform: translateY(-4px); }
+.mini:focus-visible { outline: 3px solid var(--amanatsu); outline-offset: 2px; }
 
-@keyframes deal {
-  from { opacity: 0; transform: translateY(-20px) rotate(-4deg); }
-  to { opacity: 1; transform: none; }
-}
-
-/* 結果 */
-.chosen-wrap { display: flex; justify-content: center; margin: 8px 0 20px; }
-.card {
-  width: min(70vw, 280px);
-  aspect-ratio: 941 / 1672;
-  perspective: 1200px;
-}
-.card-inner {
+.mini-inner {
   position: relative;
+  display: block;
   width: 100%;
   height: 100%;
   transition: transform 0.8s cubic-bezier(0.3, 0.7, 0.3, 1);
   transform-style: preserve-3d;
 }
-.card.flipped .card-inner { transform: rotateY(180deg); }
+.mini.flipped .mini-inner { transform: rotateY(180deg); }
 
 .face {
   position: absolute;
   inset: 0;
-  border-radius: 10px;
+  border-radius: 6px;
   overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  box-shadow: 0 6px 16px rgba(40, 30, 20, 0.25);
+  box-shadow: 0 3px 8px rgba(40, 30, 20, 0.3);
+}
+.back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: max(2px, calc(var(--w) * 0.05)) solid var(--paper);
+  background:
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.07) 0 4px, transparent 4px 10px),
+    radial-gradient(circle at center, rgba(242,155,43,0.35) 0 32%, transparent 33%),
+    var(--navy);
+}
+.back::after {
+  content: "";
+  position: absolute;
+  inset: max(2px, calc(var(--w) * 0.05));
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+}
+.mini-no {
+  color: #fff;
+  font-weight: bold;
+  font-size: calc(var(--w) * 0.38);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 .front { transform: rotateY(180deg); background: var(--paper); }
 .front img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.front img.reversed { transform: rotate(180deg); }
+img.reversed { transform: rotate(180deg); }
 
-
-.result {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-left: 6px solid var(--amanatsu);
-  border-radius: 12px;
-  padding: 16px 18px;
-  max-width: 560px;
-  margin: 0 auto 24px;
-  animation: deal 0.4s ease-out both;
+/* 項目名のラベル(カードより手前に表示) */
+.label {
+  z-index: 100;
+  left: calc(var(--cx) + var(--side) * var(--w) * 0.62);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-weight: bold;
+  color: var(--navy);
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  pointer-events: none;
 }
-.result.is-reversed { border-left-color: var(--navy); }
-.result h2 { margin: 2px 0 0; font-size: 1.2rem; color: var(--navy); }
-.result .roman { color: var(--gold); }
-.result .orientation {
-  display: inline-block;
-  margin-left: 4px;
-  padding: 0 10px;
+.label.above { top: calc(var(--cy) - var(--h) / 2 - 1.4em); }
+.label.below { top: calc(var(--cy) + var(--h) / 2 + 0.2em); }
+.label.key {
+  top: calc(var(--cy) + var(--h) / 2 - 0.6em);
+  padding: 0 0.4em;
   border-radius: 999px;
-  font-size: 0.8rem;
+  background: var(--paper);
+  color: var(--amanatsu-dark);
+}
+
+/* ===== 結果画面 ===== */
+#result-view { max-width: 600px; margin: 0 auto; }
+
+.back-btn {
+  border: 0;
+  background: none;
+  color: var(--amanatsu-dark);
+  font-weight: bold;
+  padding: 8px 0;
+}
+.back-btn:hover { text-decoration: underline; }
+
+.position-head { text-align: center; margin: 8px 0 16px; }
+.position-no { margin: 0; color: var(--amanatsu-dark); font-weight: bold; font-size: 0.85rem; letter-spacing: 0.1em; }
+.position-name { margin: 0; color: var(--navy); font-size: 1.4rem; }
+.position-desc { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+
+.result-card {
+  display: block;
+  width: min(86vw, 380px);
+  margin: 0 auto 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(40, 30, 20, 0.3);
+  aspect-ratio: 941 / 1672;
+  background: var(--paper);
+  cursor: zoom-in;
+  animation: pop 0.5s ease-out both;
+}
+.result-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.result-card:focus-visible { outline: 3px solid var(--navy); outline-offset: 3px; }
+
+/* 拡大表示 */
+.zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  border: 0;
+  background: rgba(20, 16, 30, 0.85);
+  cursor: zoom-out;
+  animation: fade 0.25s ease-out both;
+}
+.zoom img {
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 941 / 1672;
+  object-fit: contain;
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+.zoom img.reversed { transform: rotate(180deg); }
+body.zoomed { overflow: hidden; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: none; }
+}
+
+.card-title { text-align: center; margin-bottom: 16px; }
+.card-en { margin: 0; font-size: 0.75rem; letter-spacing: 0.15em; color: var(--muted); }
+.card-title h3 { margin: 0; font-size: 1.5rem; color: var(--navy); }
+.card-roman { color: var(--gold); }
+.orientation {
+  display: inline-block;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
   vertical-align: middle;
   color: #fff;
   background: var(--amanatsu);
 }
-.result.is-reversed .orientation { background: var(--navy); }
-.result .en { margin: 0 0 6px; font-size: 0.75rem; letter-spacing: 0.1em; color: var(--muted); }
-.result .meaning { margin: 0; }
+.is-reversed .orientation { background: var(--navy); }
+
+.reading {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--amanatsu);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+}
+.is-reversed .reading { border-left-color: var(--navy); }
+/* 項目に当てはめた解釈(いちばん大きく見せる) */
+.specific-text {
+  margin: 0 0 16px;
+  padding: 18px 20px;
+  border: 2px solid var(--amanatsu);
+  border-radius: 14px;
+  background: #fff4e3;
+  font-size: 1.2rem;
+  font-weight: bold;
+  line-height: 1.8;
+  color: var(--ink);
+}
+.is-reversed .specific-text { border-color: var(--navy); background: #eef0f7; }
+.reading h4 { margin: 0 0 4px; color: var(--amanatsu-dark); font-size: 0.95rem; }
+.is-reversed .reading h4 { color: var(--navy); }
+.reading p { margin: 0; }
+.reading .keywords { font-weight: normal; }
+
+.primary {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 24px auto 0;
+  padding: 14px 20px;
+  border: 0;
+  border-radius: 999px;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(135deg, var(--amanatsu), var(--amanatsu-dark));
+  box-shadow: 0 4px 12px rgba(201, 113, 26, 0.35);
+}
+.primary:hover { filter: brightness(1.05); }
+.primary:focus-visible, .back-btn:focus-visible { outline: 3px solid var(--navy); outline-offset: 3px; }
 
 .site-footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding: 20px 16px 32px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .deck-card, .result { animation: none; }
-  .card-inner { transition: none; }
+  .mini-inner { transition: none; }
+  .result-card, .zoom { animation: none; }
 }

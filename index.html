@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>あまなつちゃんタロット占い</title>
-  <meta name="description" content="伏せられたカードから1枚選んでめくる、かんたんタロット占い。">
+  <meta name="description" content="13枚のカードで運勢を読み解く、ホロスコープ・スプレッドのタロット占い。">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -14,45 +14,50 @@
   </header>
 
   <main>
-    <!-- 1. はじめ -->
-    <section id="start" class="panel">
-      <p class="lead">心を落ち着けて、知りたいことを思い浮かべてね。<br>準備ができたらカードをシャッフルします。</p>
-      <label class="question">
-        <span>占いたいこと(なくてもOK)</span>
-        <input id="question" type="text" maxlength="60" placeholder="例:今週の仕事運は?">
-      </label>
-      <button type="button" id="start-btn" class="primary">カードをシャッフルする</button>
+    <!-- カードの配置 -->
+    <section id="spread-view">
+      <p class="lead">13枚のカードが、あなたの運勢を12の項目と「鍵」で教えてくれます。<br>気になる項目のカードをタップしてめくってね。</p>
+      <p id="progress" class="progress"></p>
+      <div id="board" class="board"></div>
     </section>
 
-    <!-- 2. カードを選ぶ -->
-    <section id="pick" hidden>
-      <p class="shown-question" hidden></p>
-      <p class="hint">気になるカードを1枚えらんでね</p>
-      <div id="deck" class="deck"></div>
-    </section>
+    <!-- 結果 -->
+    <section id="result-view" hidden>
+      <button type="button" class="back-btn" data-back>← カードの配置に戻る</button>
 
-    <!-- 3. 結果 -->
-    <section id="result" hidden>
-      <p class="shown-question" hidden></p>
-      <div class="chosen-wrap">
-        <div id="chosen-card" class="card">
-          <div class="card-inner">
-            <div class="face back"><span class="back-mark" aria-hidden="true">✦</span></div>
-            <div class="face front"><img id="chosen-img" alt=""></div>
-          </div>
-        </div>
+      <div class="position-head">
+        <p class="position-no"></p>
+        <h2 class="position-name"></h2>
+        <p class="position-desc"></p>
       </div>
-      <article id="result-body" class="result" aria-live="polite" hidden>
-        <h2><span class="roman"></span> <span class="name"></span> <span class="orientation"></span></h2>
-        <p class="en"></p>
-        <p class="meaning"></p>
+
+      <button type="button" id="result-card" class="result-card" aria-label="カードを拡大する">
+        <img id="result-img" alt="">
+      </button>
+
+      <div class="card-title">
+        <p class="card-en"></p>
+        <h3><span class="card-roman"></span> <span class="card-name"></span> <span class="orientation"></span></h3>
+      </div>
+
+      <p class="specific-text"></p>
+
+      <article class="reading general">
+        <h4>カードの意味:<span class="keywords"></span></h4>
+        <p class="general-text"></p>
       </article>
-      <button type="button" id="retry" class="primary">もう一度占う</button>
+
+      <button type="button" class="primary" data-back>カードの配置に戻る</button>
     </section>
   </main>
 
+  <!-- カードの拡大表示 -->
+  <button type="button" id="zoom" class="zoom" aria-label="拡大表示を閉じる" hidden>
+    <img id="zoom-img" alt="">
+  </button>
+
   <footer class="site-footer">
-    <p>占いの結果は楽しむためのものです。</p>
+    <p>占いの結果は楽しむためのものです。ページを再読み込みすると、カードが新しく配られます。</p>
   </footer>
 
   <script src="js/cards.js"></script>
