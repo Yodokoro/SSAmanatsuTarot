@@ -26,12 +26,43 @@ body {
   line-height: 1.7;
 }
 
+/* 中国語は中国語のフォントを優先する */
+html:lang(zh-Hans) body { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; }
+html:lang(zh-Hant) body { font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif; }
+
+/* 言語の切り替え(右上) */
+.lang-switch {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.lang-switch label { white-space: nowrap; }
+.lang-switch select {
+  font: inherit;
+  color: var(--ink);
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  cursor: pointer;
+}
+.lang-switch select:focus-visible { outline: 2px solid var(--amanatsu); outline-offset: 1px; }
+@media (max-width: 480px) {
+  .lang-switch label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+}
+
 main { max-width: 860px; margin: 0 auto; padding: 0 16px 40px; }
 
 button { font: inherit; cursor: pointer; }
 
 /* ヘッダー */
-.site-header { text-align: center; padding: 32px 16px 12px; }
+.site-header { text-align: center; padding: 44px 16px 12px; }
 .site-header .sub {
   margin: 0;
   color: var(--amanatsu-dark);

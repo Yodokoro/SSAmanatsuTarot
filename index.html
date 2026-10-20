@@ -8,22 +8,28 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <!-- 言語の切り替え -->
+  <div class="lang-switch">
+    <label for="lang-select" id="lang-label">言語</label>
+    <select id="lang-select"></select>
+  </div>
+
   <header class="site-header">
     <p class="sub">✦ Amanatsu Tarot ✦</p>
-    <h1>あまなつちゃん<br class="sp">タロット占い</h1>
+    <h1><span data-i18n="h1.0">あまなつちゃん</span><br class="sp"><span data-i18n="h1.1">タロット占い</span></h1>
   </header>
 
   <main>
     <!-- カードの配置 -->
     <section id="spread-view">
-      <p class="lead">13枚のカードが、あなたの運勢を12の項目と「鍵」で教えてくれます。<br>気になる項目のカードをタップしてめくってね。</p>
+      <p class="lead"><span data-i18n="lead.0"></span><br><span data-i18n="lead.1"></span></p>
       <p id="progress" class="progress"></p>
       <div id="board" class="board"></div>
     </section>
 
     <!-- 結果 -->
     <section id="result-view" hidden>
-      <button type="button" class="back-btn" data-back>← カードの配置に戻る</button>
+      <button type="button" class="back-btn" data-back data-i18n="backLink"></button>
 
       <div class="position-head">
         <p class="position-no"></p>
@@ -31,7 +37,7 @@
         <p class="position-desc"></p>
       </div>
 
-      <button type="button" id="result-card" class="result-card" aria-label="カードを拡大する">
+      <button type="button" id="result-card" class="result-card">
         <img id="result-img" alt="">
       </button>
 
@@ -43,24 +49,29 @@
       <p class="specific-text"></p>
 
       <article class="reading general">
-        <h4>カードの意味:<span class="keywords"></span></h4>
+        <h4><span data-i18n="meaningHead"></span><span class="keywords"></span></h4>
         <p class="general-text"></p>
       </article>
 
-      <button type="button" class="primary" data-back>カードの配置に戻る</button>
+      <button type="button" class="primary" data-back data-i18n="backButton"></button>
     </section>
   </main>
 
   <!-- カードの拡大表示 -->
-  <button type="button" id="zoom" class="zoom" aria-label="拡大表示を閉じる" hidden>
+  <button type="button" id="zoom" class="zoom" hidden>
     <img id="zoom-img" alt="">
   </button>
 
   <footer class="site-footer">
-    <p>占いの結果は楽しむためのものです。ページを再読み込みすると、カードが新しく配られます。</p>
+    <p data-i18n="footer"></p>
   </footer>
 
   <script src="js/cards.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/lang/ja.js"></script>
+  <script src="js/lang/en.js"></script>
+  <script src="js/lang/zh-Hans.js"></script>
+  <script src="js/lang/zh-Hant.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
